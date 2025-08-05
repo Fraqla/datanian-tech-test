@@ -1,3 +1,15 @@
-@livewireStyles
-...
-@livewireScripts
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>App</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <main class="p-4">
+        {{ $slot }}
+    </main>
+    @livewireScripts
+</body>
+</html>
