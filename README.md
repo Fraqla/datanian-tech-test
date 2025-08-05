@@ -1,45 +1,58 @@
-# Datanian Sdn Bhd Technical Test
-Thank you for applying to be a developer at Datanian Sdn Bhd!
-We are looking forward to have you onboard. However, before we can have a detailed conversation, we would like to evaluate your technical skills in order for us to understand you a bit better.
+# Project Summary:
+- A simple web-based system to manage monitoring stations and their sensors
+- Built using Laravel 10, Livewire, and Tailwind CSS
+- Features include add/edit/delete stations & sensors, with status indicators and confirmation modals
 
-This tech test will help us evaluate your skills.
+--------------------------------------------------------------------------------------------------------
 
-We understand that you might have other matters to attend to, besides focusing on this test full time. However, in order for us to evaluate your time-management skill, we will put a 1 week period for you to undertake this test, complete it, and submit it to us for further evaluation. Feel free to reach out to us anytime within the period, if you have more questions/clarification needed.
+# Built With:
+- **Laravel 10** – PHP web framework
+- **Livewire** – Laravel full-stack framework for dynamic interfaces
+- **Tailwind CSS** – Utility-first CSS framework
+- **MySQL** – Relational database management system
+- **XAMPP** – Local development environment (Apache, MySQL, PHP)
+- **Node.js & NPM** – For frontend asset compilation (Laravel Mix)
 
-The code provided by you wil be used only to judge your development and time-management abilities.
+--------------------------------------------------------------------------------------------------------
 
-## Instructions
-1. There is no end to this test as it is open ended. You can do as much or as little as you like.
-2. The test is designed to allow you to make your own requirements, features, look and feel etc.
-3. It is used to see what type of developer you are and how you think about things, within a limited timeframe given.
-4. Show your workings, step-by-step (git history); This will help a lot for us to evaluate you fairly.
-5. You may use any technologies you need and/or require, but please justify your choices in your closing comments.
-7. Please work out of the `src` directory as your root.
-8. Once you have completed your tech test, please fill out the `NOTES.md` with any closing comments you would like to add.
-10. If you use any of the following, or similar, technologies and/or tools, then please be sure to include instructions on getting your solution running:
-  * composer
-  * bower
-  * npm
-  * junit
-  * phpunit
+# How to run the project:
 
-> There is no right or wrong way of completing this test
+1. **Clone the repository**
+git clone https://github.com/Fraqla/datanian-tech-test.git
+cd your-repo-name (example: cd datanian-tech-test\src\sensor-manager)
 
-## The Test
-Create a web application which allows users to manage multiple devices/sensors installed in multiple stations.
+2. **Install laravel dependencies**
+composer install
 
-Here are some feature ideas to get your creative juices flowing:
- - Sensor's Type
- - Sensor's capabilities
- - Sensor's status
- - Station's Location
- - Station's status
- - Remember, there is no right or wrong way to complete this test, so the above features are not necessarily required. They could also be completely ignored and you can do something else entirely :)
+3. **Install front-end dependencies**
+npm install
 
-## Things to Note
-The following are areas to consider when undertaking the assessment:
- - Ensure you read the instructions thoroughly
- - Comment your code so we understand your thought processes
- - It doesn't have to be 100% operational providing you outline what does and what doesn't work
- - If using a framework, make sure you demonstrate your coding ability and not your ability to simply use a framework
- - Ensure the security and data integrity of your app is considered
+4. **Edit .env with your database credentials (if needed)**
+DB_DATABASE=your_database_name
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+
+5. **Generate application key**
+php artisan key:generate
+
+6. **Run migration**
+php artisan migrate
+
+7. **Compile assets**
+npm run dev
+
+8. **Run optimize**
+php artisan optimize
+
+9. **Run laravel server**
+php artisan serve
+
+10. **Open your browser**
+http://127.0.0.1:8000
+
+--------------------------------------------------------------------------------------------------------
+
+# Notes:
+- Make sure MySQL is running in XAMPP before you migrate the database.
+- You may need to create the database manually using phpMyAdmin or MySQL CLI.
+- .env.example is provided — copy it to .env if it's not already present.

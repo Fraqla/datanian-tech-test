@@ -111,35 +111,44 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse ($sensors as $sensor)
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $sensor->id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ $sensor->station->name ?? 'Station #' . $sensor->station_id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $sensor->type }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $sensor->capability }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $sensor->status }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button wire:click="editSensor({{ $sensor->id }})"
-                                class="text-blue-600 hover:text-blue-900 mr-2">
-                                Edit
-                            </button>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $loop->iteration }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $sensor->station->name ?? 'Station #' . $sensor->station_id }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $sensor->type }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $sensor->capability }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                    {{ $sensor->status === 'online'
+                    ? 'bg-green-100 text-green-800'
+                    : ($sensor->status === 'offline'
+                        ? 'bg-gray-100 text-gray-800'
+                        : 'bg-yellow-100 text-yellow-800') }}">
+                                        {{ ucfirst($sensor->status) }}
+                                    </span>
+                                </td>
 
-                            @if ($confirmingDeleteId === $sensor->id)
-                                <span class="inline-flex space-x-2">
-                                    <button wire:click="deleteConfirmed" class="text-red-700 font-bold">
-                                        Confirm Delete
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <button wire:click="editSensor({{ $sensor->id }})"
+                                        class="text-yellow-600 hover:text-yellow-800 mr-2" title="Edit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15.232 5.232l3.536 3.536M9 11l6.364-6.364a1 1 0 011.414 0l3.536 3.536a1 1 0 010 1.414L13.95 16.95a2 2 0 01-.879.515l-4.243 1.06a1 1 0 01-1.212-1.212l1.06-4.243a2 2 0 01.515-.879z" />
+                                        </svg>
                                     </button>
-                                    <button wire:click="cancelDelete" class="text-gray-500">
-                                        Cancel
+
+
+                                    <button wire:click="confirmDelete({{ $sensor->id }})" class="text-red-600 hover:text-red-800"
+                                        title="Delete">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
                                     </button>
-                                </span>
-                            @else
-                                <button wire:click="confirmDelete({{ $sensor->id }})" class="text-red-600 hover:text-red-900">
-                                    Delete
-                                </button>
-                            @endif
-                        </td>
-                    </tr>
+                                </td>
+                            </tr>
                 @empty
                     <tr>
                         <td colspan="6" class="text-center px-6 py-4 text-sm text-gray-500">No sensors found.</td>

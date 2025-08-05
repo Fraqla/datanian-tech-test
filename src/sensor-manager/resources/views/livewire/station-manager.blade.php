@@ -79,7 +79,11 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name
+                    </th>
                     <th scope="col"
                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location
                     </th>
@@ -94,11 +98,11 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @foreach ($stations as $station)
                             <tr class="{{ $loop->even ? 'bg-gray-50' : 'bg-white' }} hover:bg-gray-100">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $loop->iteration }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $station->name }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $station->location }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                                    {{ $station->status === 'active'
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $station->status === 'active'
                     ? 'bg-green-100 text-green-800'
                     : ($station->status === 'inactive'
                         ? 'bg-gray-100 text-gray-800'
@@ -108,24 +112,24 @@
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button wire:click="edit({{ $station->id }})" class="text-blue-600 hover:text-blue-900 mr-3">
-                                        Edit
+                                    <button wire:click="edit({{ $station->id }})"
+                                        class="text-yellow-600 hover:text-yellow-800 mr-2" title="Edit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15.232 5.232l3.536 3.536M9 11l6.364-6.364a1 1 0 011.414 0l3.536 3.536a1 1 0 010 1.414L13.95 16.95a2 2 0 01-.879.515l-4.243 1.06a1 1 0 01-1.212-1.212l1.06-4.243a2 2 0 01.515-.879z" />
+                                        </svg>
                                     </button>
 
-                                    @if ($confirmingDeleteId === $station->id)
-                                        <div class="inline-flex space-x-2">
-                                            <button wire:click="deleteConfirmed" class="text-red-700 font-bold">
-                                                Confirm Delete
-                                            </button>
-                                            <button wire:click="cancelDelete" class="text-gray-500">
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    @else
-                                        <button wire:click="confirmDelete({{ $station->id }})" class="text-red-600 hover:text-red-900">
-                                            Delete
-                                        </button>
-                                    @endif
+
+                                    <button wire:click="confirmDelete({{ $station->id }})" class="text-red-600 hover:text-red-800"
+                                        title="Delete">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+
                                 </td>
                                 <!-- Confirmation Modal -->
                                 @if ($confirmingDeleteId)

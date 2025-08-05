@@ -19,14 +19,14 @@
                 <!-- Station Module -->
                 <a href="{{ route('station') }}"
                    class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-6 px-6 shadow-lg transform hover:-translate-y-1 transition duration-300">
-                    <h2 class="text-2xl font-semibold">📍 Station Manager</h2>
+                    <h2 class="text-2xl font-semibold">📍 Station Management</h2>
                     <p class="text-sm mt-2">Manage locations and station details</p>
                 </a>
 
                 <!-- Sensor Module -->
                 <a href="{{ route('sensor') }}"
                    class="bg-green-600 hover:bg-green-700 text-white rounded-xl py-6 px-6 shadow-lg transform hover:-translate-y-1 transition duration-300">
-                    <h2 class="text-2xl font-semibold">🔧 Sensor Manager</h2>
+                    <h2 class="text-k,ll,2xl font-semibold">🔧 Sensor Management</h2>
                     <p class="text-sm mt-2">Manage sensors and capabilities</p>
                 </a>
             </div>
