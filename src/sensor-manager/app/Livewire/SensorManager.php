@@ -12,6 +12,7 @@ class SensorManager extends Component
     public $sensors, $stations;
     public $sensor_id, $station_id, $type, $capability, $status;
     public $isEditing = false;
+    public $confirmingDeleteId = null;
 
     // Runs when the component loads
     public function mount()
@@ -35,6 +36,7 @@ class SensorManager extends Component
         $this->capability = '';
         $this->status = '';
         $this->isEditing = false;
+        $this->confirmingDeleteId = null;
     }
 
     // Save a new sensor to the database
@@ -72,6 +74,7 @@ class SensorManager extends Component
         $this->capability = $sensor->capability;
         $this->status = $sensor->status;
         $this->isEditing = true;
+        $this->confirmingDeleteId = null;
     }
 
     // Save changes to an existing sensor
@@ -100,12 +103,27 @@ class SensorManager extends Component
         session()->flash('message', 'Sensor updated successfully.');
     }
 
-    // Delete a sensor by ID
-    public function deleteSensor($id)
+    // Trigger delete confirmation
+    public function confirmDelete($id)
     {
-        Sensor::findOrFail($id)->delete();
-        $this->loadSensors();
-        session()->flash('message', 'Sensor deleted successfully.');
+        $this->confirmingDeleteId = $id;
+    }
+
+    // Cancel delete confirmation
+    public function cancelDelete()
+    {
+        $this->confirmingDeleteId = null;
+    }
+
+    // Delete method
+    public function deleteConfirmed()
+    {
+        if ($this->confirmingDeleteId) {
+            Sensor::findOrFail($this->confirmingDeleteId)->delete();
+            $this->confirmingDeleteId = null;
+            $this->loadSensors();
+            session()->flash('message', 'Sensor deleted successfully.');
+        }
     }
 
     // Display the page with the layout

@@ -10,6 +10,7 @@ class StationManager extends Component
     // Public properties bound to the form inputs
     public $name, $location, $status = 'active';
     public $stations, $station_id;
+    public $confirmingDeleteId = null;
 
     // This method runs when the page loads
     public function mount()
@@ -24,7 +25,7 @@ class StationManager extends Component
         $this->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'status' => 'required|in:active,inactive',
+            'status' => 'required|in:active,inactive,maintenance',
         ]);
 
         // Create or update a station record
@@ -59,6 +60,28 @@ class StationManager extends Component
         Station::findOrFail($id)->delete();
 
         $this->stations = Station::all();
+    }
+
+    // Called when delete button is clicked
+    public function confirmDelete($id)
+    {
+        $this->confirmingDeleteId = $id;
+    }
+
+    // Cancel delete
+    public function cancelDelete()
+    {
+        $this->confirmingDeleteId = null;
+    }
+
+    // Called after user confirms deletion
+    public function deleteConfirmed()
+    {
+        Station::findOrFail($this->confirmingDeleteId)->delete();
+        $this->stations = Station::all();
+        $this->confirmingDeleteId = null;
+
+        session()->flash('message', 'Station deleted successfully.');
     }
 
     // Reset form fields to default

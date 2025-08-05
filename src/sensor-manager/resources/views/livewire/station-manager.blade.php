@@ -1,52 +1,153 @@
-<div class="p-6 max-w-3xl mx-auto">
-    {{-- Flash message after saving/deleting --}}
+<div class="p-6 max-w-5xl mx-auto bg-white rounded-lg shadow-md">
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a href="{{ url('/') }}"
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            ← Back to Home
+        </a>
+    </div>
+
+    <!-- Page Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Station Management</h1>
+        <p class="text-gray-600">Add, edit, or remove monitoring stations</p>
+    </div>
+
+    <!-- Flash message after saving/deleting -->
     @if (session()->has('message'))
-        <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
-            {{ session('message') }}
+        <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6 rounded">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-green-700">{{ session('message') }}</p>
+                </div>
+            </div>
         </div>
     @endif
 
-    {{-- Form to create or update a station --}}
-    <form wire:submit.prevent="save" class="space-y-4 mb-6">
-        <input type="text" wire:model="name" placeholder="Station Name" class="w-full p-2 border rounded" />
-        <input type="text" wire:model="location" placeholder="Location" class="w-full p-2 border rounded" />
+    <!-- Form to create or update a station -->
+    <div class="bg-gray-50 p-5 rounded-lg mb-8 border border-gray-200">
+        <h2 class="text-lg font-medium text-gray-800 mb-4">{{ $station_id ? 'Update Station' : 'Add New Station' }}</h2>
+        <form wire:submit.prevent="save" class="space-y-4">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Station Name</label>
+                <input type="text" wire:model="name" id="name" placeholder="Enter station name"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
 
-        {{-- Dropdown for station status --}}
-        <select wire:model="status" class="w-full p-2 border rounded">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-        </select>
+            <div>
+                <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                <input type="text" wire:model="location" id="location" placeholder="Enter location"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
 
-        {{-- Submit button --}}
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
-    </form>
+            <div>
+                <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select wire:model="status" id="status"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="maintenance">Maintenance</option>
+                </select>
+            </div>
 
-    {{-- Table displaying list of stations --}}
-    <table class="w-full table-auto border-collapse">
-        <thead>
-            <tr class="bg-gray-100">
-                <th class="border p-2">Name</th>
-                <th class="border p-2">Location</th>
-                <th class="border p-2">Status</th>
-                <th class="border p-2">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{-- Loop through each station and display its data --}}
-            @foreach ($stations as $station)
+            <div class="pt-2">
+                <button type="submit"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    {{ $station_id ? 'Update Station' : 'Save Station' }}
+                </button>
+                @if($station_id)
+                    <button type="button" wire:click="cancelEdit"
+                        class="ml-2 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Cancel
+                    </button>
+                @endif
+            </div>
+        </form>
+    </div>
+
+    <!-- Table displaying list of stations -->
+    <div class="overflow-x-auto">
+        <h2 class="text-lg font-medium text-gray-800 mb-3">Station List</h2>
+        <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg overflow-hidden">
+            <thead class="bg-gray-50">
                 <tr>
-                    <td class="border p-2">{{ $station->name }}</td>
-                    <td class="border p-2">{{ $station->location }}</td>
-                    <td class="border p-2">{{ $station->status }}</td>
-                    <td class="border p-2 space-x-2">
-                        {{-- Button to load data into form for editing --}}
-                        <button wire:click="edit({{ $station->id }})" class="text-blue-500 hover:underline">Edit</button>
-
-                        {{-- Button to delete the station --}}
-                        <button wire:click="delete({{ $station->id }})" class="text-red-500 hover:underline">Delete</button>
-                    </td>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
+                    </th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @foreach ($stations as $station)
+                            <tr class="{{ $loop->even ? 'bg-gray-50' : 'bg-white' }} hover:bg-gray-100">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $station->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $station->location }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                                    {{ $station->status === 'active'
+                    ? 'bg-green-100 text-green-800'
+                    : ($station->status === 'inactive'
+                        ? 'bg-gray-100 text-gray-800'
+                        : 'bg-yellow-100 text-yellow-800') }}">
+                                        {{ ucfirst($station->status) }}
+                                    </span>
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <button wire:click="edit({{ $station->id }})" class="text-blue-600 hover:text-blue-900 mr-3">
+                                        Edit
+                                    </button>
+
+                                    @if ($confirmingDeleteId === $station->id)
+                                        <div class="inline-flex space-x-2">
+                                            <button wire:click="deleteConfirmed" class="text-red-700 font-bold">
+                                                Confirm Delete
+                                            </button>
+                                            <button wire:click="cancelDelete" class="text-gray-500">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    @else
+                                        <button wire:click="confirmDelete({{ $station->id }})" class="text-red-600 hover:text-red-900">
+                                            Delete
+                                        </button>
+                                    @endif
+                                </td>
+                                <!-- Confirmation Modal -->
+                                @if ($confirmingDeleteId)
+                                    <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                                        <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                                            <h2 class="text-lg font-bold mb-4">Are you sure you want to delete this station?</h2>
+                                            <div class="flex justify-end space-x-3">
+                                                <button wire:click="deleteConfirmed"
+                                                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+                                                    Yes, Delete
+                                                </button>
+                                                <button wire:click="cancelDelete"
+                                                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </div>
