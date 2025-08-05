@@ -36,49 +36,79 @@
         <div class="w-full max-w-6xl">
             <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">📊 System Overview</h2>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-                <!-- Total Stations -->
-                <div class="bg-blue-100 text-center p-6 rounded-xl shadow-md">
-                    <h3 class="text-lg font-bold text-blue-800">Total Stations</h3>
-                    <p class="text-4xl text-blue-900 font-extrabold mt-2">{{ \App\Models\Station::count() }}</p>
-                    <p class="text-sm text-blue-700 mt-1">All registered monitoring stations</p>
-                </div>
+            <!-- Station Overview -->
+            <div class="mb-10">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">📍 Station Status</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-blue-100 text-center p-6 rounded-xl shadow-md">
+                        <h3 class="text-lg font-bold text-blue-800">Total Stations</h3>
+                        <p class="text-4xl text-blue-900 font-extrabold mt-2">{{ \App\Models\Station::count() }}</p>
+                        <p class="text-sm text-blue-700 mt-1">All registered monitoring stations</p>
+                    </div>
 
-                <!-- Active Stations -->
-                <div class="bg-green-100 text-center p-6 rounded-xl shadow-md">
-                    <h3 class="text-lg font-bold text-green-800">Active</h3>
-                    <p class="text-4xl text-green-900 font-extrabold mt-2">
-                        {{ \App\Models\Station::where('status', 'active')->count() }}
-                    </p>
-                    <p class="text-sm text-green-700 mt-1">Stations currently operating</p>
-                </div>
+                    <div class="bg-green-100 text-center p-6 rounded-xl shadow-md">
+                        <h3 class="text-lg font-bold text-green-800">Active</h3>
+                        <p class="text-4xl text-green-900 font-extrabold mt-2">
+                            {{ \App\Models\Station::where('status', 'active')->count() }}
+                        </p>
+                        <p class="text-sm text-green-700 mt-1">Stations currently operating</p>
+                    </div>
 
-                <!-- Inactive Stations -->
-                <div class="bg-gray-100 text-center p-6 rounded-xl shadow-md">
-                    <h3 class="text-lg font-bold text-gray-800">Inactive</h3>
-                    <p class="text-4xl text-gray-900 font-extrabold mt-2">
-                        {{ \App\Models\Station::where('status', 'inactive')->count() }}
-                    </p>
-                    <p class="text-sm text-gray-700 mt-1">Stations not in use or turned off</p>
-                </div>
+                    <div class="bg-gray-100 text-center p-6 rounded-xl shadow-md">
+                        <h3 class="text-lg font-bold text-gray-800">Inactive</h3>
+                        <p class="text-4xl text-gray-900 font-extrabold mt-2">
+                            {{ \App\Models\Station::where('status', 'inactive')->count() }}
+                        </p>
+                        <p class="text-sm text-gray-700 mt-1">Stations not in use or turned off</p>
+                    </div>
 
-                <!-- Maintenance Stations -->
-                <div class="bg-yellow-100 text-center p-6 rounded-xl shadow-md">
-                    <h3 class="text-lg font-bold text-yellow-800">Maintenance</h3>
-                    <p class="text-4xl text-yellow-900 font-extrabold mt-2">
-                        {{ \App\Models\Station::where('status', 'maintenance')->count() }}
-                    </p>
-                    <p class="text-sm text-yellow-700 mt-1">Stations under maintenance or repair</p>
+                    <div class="bg-yellow-100 text-center p-6 rounded-xl shadow-md">
+                        <h3 class="text-lg font-bold text-yellow-800">Maintenance</h3>
+                        <p class="text-4xl text-yellow-900 font-extrabold mt-2">
+                            {{ \App\Models\Station::where('status', 'maintenance')->count() }}
+                        </p>
+                        <p class="text-sm text-yellow-700 mt-1">Stations under maintenance</p>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Total Sensors -->
-                <div class="bg-purple-100 text-center p-6 rounded-xl shadow-md">
-                    <h3 class="text-lg font-bold text-purple-800">Total Sensors</h3>
-                    <p class="text-4xl text-purple-900 font-extrabold mt-2">{{ \App\Models\Sensor::count() }}</p>
-                    <p class="text-sm text-purple-700 mt-1">All sensors installed across stations</p>
+            <!-- Sensor Overview -->
+            <div>
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">🔧 Sensor Status</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-purple-100 text-center p-6 rounded-xl shadow-md">
+                        <h3 class="text-lg font-bold text-purple-800">Total Sensors</h3>
+                        <p class="text-4xl text-purple-900 font-extrabold mt-2">{{ \App\Models\Sensor::count() }}</p>
+                        <p class="text-sm text-purple-700 mt-1">All sensors across stations</p>
+                    </div>
+
+                    <div class="bg-green-100 text-center p-6 rounded-xl shadow-md">
+                        <h3 class="text-lg font-bold text-green-800">Online</h3>
+                        <p class="text-4xl text-green-900 font-extrabold mt-2">
+                            {{ \App\Models\Sensor::where('status', 'online')->count() }}
+                        </p>
+                        <p class="text-sm text-green-700 mt-1">Sensors currently working</p>
+                    </div>
+
+                    <div class="bg-red-100 text-center p-6 rounded-xl shadow-md">
+                        <h3 class="text-lg font-bold text-red-800">Offline</h3>
+                        <p class="text-4xl text-red-900 font-extrabold mt-2">
+                            {{ \App\Models\Sensor::where('status', 'offline')->count() }}
+                        </p>
+                        <p class="text-sm text-red-700 mt-1">Sensors that are disconnected</p>
+                    </div>
+
+                    <div class="bg-yellow-100 text-center p-6 rounded-xl shadow-md">
+                        <h3 class="text-lg font-bold text-yellow-800">Maintenance</h3>
+                        <p class="text-4xl text-yellow-900 font-extrabold mt-2">
+                            {{ \App\Models\Sensor::where('status', 'maintenance')->count() }}
+                        </p>
+                        <p class="text-sm text-yellow-700 mt-1">Sensors under repair or calibration</p>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 </body>
 

@@ -8,7 +8,7 @@
     <!-- Back Button -->
     <div class="mb-4">
         <a href="{{ url('/') }}"
-           class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             ← Back to Home
         </a>
     </div>
@@ -41,8 +41,14 @@
             <!-- Sensor Type -->
             <div>
                 <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                <input wire:model="type" type="text" id="type"
+                <select wire:model="type" id="type"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                    <option value="">-- Select Type --</option>
+                    <option value="Temperature">Temperature</option>
+                    <option value="Humidity">Humidity</option>
+                    <option value="Pressure">Pressure</option>
+                    <option value="Air Quality">Air Quality</option>
+                </select>
                 @error('type') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
@@ -50,15 +56,22 @@
             <div>
                 <label for="capability" class="block text-sm font-medium text-gray-700 mb-1">Capability</label>
                 <input wire:model="capability" type="text" id="capability"
+                    placeholder="e.g., CO₂ detection, UV level, PM2.5 monitoring"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                 @error('capability') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
+
             <!-- Status -->
             <div>
                 <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <input wire:model="status" type="text" id="status"
+                <select wire:model="status" id="status"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                    <option value="">-- Select Status --</option>
+                    <option value="online">Online</option>
+                    <option value="offline">Offline</option>
+                    <option value="maintenance">Maintenance</option>
+                </select>
                 @error('status') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
@@ -85,23 +98,29 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Station</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Station
+                    </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capability</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Capability</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
+                    </th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse ($sensors as $sensor)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $sensor->id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $sensor->station->name ?? 'Station #' . $sensor->station_id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ $sensor->station->name ?? 'Station #' . $sensor->station_id }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $sensor->type }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $sensor->capability }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $sensor->status }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button wire:click="editSensor({{ $sensor->id }})" class="text-blue-600 hover:text-blue-900 mr-2">
+                            <button wire:click="editSensor({{ $sensor->id }})"
+                                class="text-blue-600 hover:text-blue-900 mr-2">
                                 Edit
                             </button>
 
@@ -136,12 +155,10 @@
             <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
                 <h2 class="text-lg font-bold mb-4">Are you sure you want to delete this sensor?</h2>
                 <div class="flex justify-end space-x-3">
-                    <button wire:click="deleteConfirmed"
-                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+                    <button wire:click="deleteConfirmed" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
                         Yes, Delete
                     </button>
-                    <button wire:click="cancelDelete"
-                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">
+                    <button wire:click="cancelDelete" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">
                         Cancel
                     </button>
                 </div>
