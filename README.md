@@ -15,6 +15,15 @@
 
 --------------------------------------------------------------------------------------------------------
 
+# Project Architecture:
+This project uses the MVC (Model-View-Controller) pattern with Laravel + Livewire.
+
+- **Model:** Handles database structure using Eloquent (e.g., Sensor, Station models).
+- **View:** Blade templates styled with Tailwind CSS, using Livewire directives for real-time updates.
+- **Controller:** Logic handled in Livewire components (app/Livewire/) to manage sensor data, validation, and user actions.
+
+--------------------------------------------------------------------------------------------------------
+
 # How to run the project:
 
 1. **Clone the repository**
