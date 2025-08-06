@@ -9,22 +9,19 @@ use Livewire\Component;
 class SensorManager extends Component
 {
     // Properties to store sensors and stations data, form input
-    public $sensors, $stations;
+    public $stations;
     public $sensor_id, $station_id, $type, $capability, $status;
     public $isEditing = false;
     public $confirmingDeleteId = null;
+    public $searchInput = '';
+    public $search = '';
+    public $perPage = 10;
+
 
     // Runs when the component loads
     public function mount()
     {
         $this->stations = Station::all();
-        $this->loadSensors();
-    }
-
-    // Fetch all sensors including their related station
-    public function loadSensors()
-    {
-        $this->sensors = Sensor::with('station')->get();
     }
 
     // Clear the form and reset editing state
@@ -60,7 +57,6 @@ class SensorManager extends Component
 
         // Reset form, reload list, and show success message
         $this->resetForm();
-        $this->loadSensors();
         session()->flash('message', 'Sensor created successfully.');
     }
 
@@ -99,7 +95,6 @@ class SensorManager extends Component
 
         // Reset form, reload list, and show success message
         $this->resetForm();
-        $this->loadSensors();
         session()->flash('message', 'Sensor updated successfully.');
     }
 
@@ -121,15 +116,40 @@ class SensorManager extends Component
         if ($this->confirmingDeleteId) {
             Sensor::findOrFail($this->confirmingDeleteId)->delete();
             $this->confirmingDeleteId = null;
-            $this->loadSensors();
             session()->flash('message', 'Sensor deleted successfully.');
         }
+    }
+
+    // Search functions
+    public function applySearch()
+    {
+        $this->search = $this->searchInput;
+    }
+
+    public function clearSearch()
+    {
+        $this->searchInput = '';
+        $this->search = '';
     }
 
     // Display the page with the layout
     public function render()
     {
-        return view('livewire.sensor-manager')
-            ->layout('layouts.app');
+        $sensors = Sensor::with('station')
+            ->when($this->search, function ($query) {
+                $query->where(function ($q) {
+                    $q->where('type', 'like', '%' . $this->search . '%')
+                        ->orWhere('capability', 'like', '%' . $this->search . '%')
+                        ->orWhere('status', 'like', '%' . $this->search . '%')
+                        ->orWhereHas('station', function ($q) {
+                            $q->where('name', 'like', '%' . $this->search . '%');
+                        });
+                });
+            })
+            ->get();
+
+        return view('livewire.sensor-manager', [
+            'sensors' => $sensors
+        ])->layout('layouts.app');
     }
 }

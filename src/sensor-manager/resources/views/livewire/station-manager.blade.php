@@ -1,4 +1,5 @@
 <div class="p-6 max-w-5xl mx-auto bg-white rounded-lg shadow-md">
+
     <!-- Back Button -->
     <div class="mb-4">
         <a href="{{ url('/') }}"
@@ -13,7 +14,7 @@
         <p class="text-gray-600">Add, edit, or remove monitoring stations</p>
     </div>
 
-    <!-- Flash message after saving/deleting -->
+    <!-- Flash success message -->
     @if (session()->has('message'))
         <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6 rounded">
             <div class="flex items-center">
@@ -75,6 +76,23 @@
     <!-- Table displaying list of stations -->
     <div class="overflow-x-auto">
         <h2 class="text-lg font-medium text-gray-800 mb-3">Station List</h2>
+
+        <!-- Search Bar with Button -->
+        <div class="mb-4 flex items-center space-x-2">
+            <input type="text" wire:model="searchInput" placeholder="Search by name or location"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+
+            <button wire:click="applySearch"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                Search
+            </button>
+
+            <button wire:click="clearSearch"
+                class="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md">
+                Clear
+            </button>
+        </div>
+
         <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg overflow-hidden">
             <thead class="bg-gray-50">
                 <tr>
@@ -95,6 +113,7 @@
                     </th>
                 </tr>
             </thead>
+
             <tbody class="bg-white divide-y divide-gray-200">
                 @foreach ($stations as $station)
                             <tr class="{{ $loop->even ? 'bg-gray-50' : 'bg-white' }} hover:bg-gray-100">
@@ -110,18 +129,15 @@
                                         {{ ucfirst($station->status) }}
                                     </span>
                                 </td>
-
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button wire:click="edit({{ $station->id }})"
-                                        class="text-yellow-600 hover:text-yellow-800 mr-2" title="Edit">
+                                    <button wire:click="edit({{ $station->id }})" class="text-yellow-600 hover:text-yellow-800 mr-2"
+                                        title="Edit">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M15.232 5.232l3.536 3.536M9 11l6.364-6.364a1 1 0 011.414 0l3.536 3.536a1 1 0 010 1.414L13.95 16.95a2 2 0 01-.879.515l-4.243 1.06a1 1 0 01-1.212-1.212l1.06-4.243a2 2 0 01.515-.879z" />
                                         </svg>
                                     </button>
-
-
                                     <button wire:click="confirmDelete({{ $station->id }})" class="text-red-600 hover:text-red-800"
                                         title="Delete">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -129,29 +145,27 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                     </button>
-
                                 </td>
-                                <!-- Confirmation Modal -->
-                                @if ($confirmingDeleteId)
-                                    <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-                                        <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                                            <h2 class="text-lg font-bold mb-4">Are you sure you want to delete this station?</h2>
-                                            <div class="flex justify-end space-x-3">
-                                                <button wire:click="deleteConfirmed"
-                                                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
-                                                    Yes, Delete
-                                                </button>
-                                                <button wire:click="cancelDelete"
-                                                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">
-                                                    Cancel
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
                             </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
+
+    <!-- Confirmation Modal -->
+    @if ($confirmingDeleteId)
+        <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h2 class="text-lg font-bold mb-4">Are you sure you want to delete this station?</h2>
+                <div class="flex justify-end space-x-3">
+                    <button wire:click="deleteConfirmed" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+                        Yes, Delete
+                    </button>
+                    <button wire:click="cancelDelete" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>

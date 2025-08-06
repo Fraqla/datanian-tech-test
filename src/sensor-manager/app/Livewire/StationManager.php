@@ -9,14 +9,10 @@ class StationManager extends Component
 {
     // Public properties bound to the form inputs
     public $name, $location, $status = 'active';
-    public $stations, $station_id;
+    public $station_id;
     public $confirmingDeleteId = null;
-
-    // This method runs when the page loads
-    public function mount()
-    {
-        $this->stations = Station::all();
-    }
+    public $searchInput = '';
+    public $search = '';
 
     // Handles saving new station or updating existing one
     public function save()
@@ -41,7 +37,6 @@ class StationManager extends Component
         // Flash success message and reset the form fields
         session()->flash('message', 'Station saved successfully.');
         $this->resetForm();
-        $this->stations = Station::all();
     }
 
     // Load station details into form for editing
@@ -52,14 +47,6 @@ class StationManager extends Component
         $this->name = $station->name;
         $this->location = $station->location;
         $this->status = $station->status;
-    }
-
-    // Delete a station by ID
-    public function delete($id)
-    {
-        Station::findOrFail($id)->delete();
-
-        $this->stations = Station::all();
     }
 
     // Called when delete button is clicked
@@ -78,9 +65,7 @@ class StationManager extends Component
     public function deleteConfirmed()
     {
         Station::findOrFail($this->confirmingDeleteId)->delete();
-        $this->stations = Station::all();
         $this->confirmingDeleteId = null;
-
         session()->flash('message', 'Station deleted successfully.');
     }
 
@@ -93,10 +78,32 @@ class StationManager extends Component
         $this->station_id = null;
     }
 
+    public function applySearch()
+    {
+        $this->search = $this->searchInput;
+    }
+
+    public function clearSearch()
+    {
+        $this->searchInput = '';
+        $this->search = '';
+    }
+
     // Render the Livewire view with layout
     public function render()
     {
-        return view('livewire.station-manager')
-            ->layout('layouts.app');
+        $stations = Station::query();
+
+        if (!empty($this->search) || !empty($this->searchInput)) {
+            $searchTerm = $this->search ?: $this->searchInput;
+            $stations->where(function ($query) use ($searchTerm) {
+                $query->where('name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('location', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        return view('livewire.station-manager', [
+            'stations' => $stations->get()
+        ])->layout('layouts.app');
     }
 }
